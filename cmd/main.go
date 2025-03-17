@@ -7,6 +7,7 @@ import (
 
 	"tg-bot/internal/config"
 	"tg-bot/internal/handlers"
+	"tg-bot/internal/ui"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -51,14 +52,17 @@ func main() {
 		}
 	}()
 
+	keyboard := ui.InitKeyboard()
+
 	manager := handlers.NewManager(cfg)
 	for update := range updates {
 		if update.Message != nil { // Если это текстовое сообщение
 			switch update.Message.Command() {
 			case "start":
-				if errUpdate := manager.StartCommand(bot, update.Message); errUpdate != nil {
+				if errUpdate := manager.StartCommand(bot, update.Message.Chat.ID, keyboard); errUpdate != nil {
 					log.Printf("start message command: %s", err.Error())
 				}
+
 			case "help":
 				if errUpdate := manager.HelpCommand(bot, update.Message); errUpdate != nil {
 					log.Printf("help message command: %s", err.Error())

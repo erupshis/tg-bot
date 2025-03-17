@@ -6,9 +6,9 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func (m *Manager) StartCommand(bot *tgbotapi.BotAPI, message *tgbotapi.Message) error {
-
-	msg := tgbotapi.NewMessage(message.Chat.ID, greetingsText)
+func (m *Manager) StartCommand(bot *tgbotapi.BotAPI, chatID int64, keyboard *tgbotapi.ReplyKeyboardMarkup) error {
+	msg := tgbotapi.NewMessage(chatID, greetingsText)
+	msg.ReplyMarkup = keyboard
 	if _, err := bot.Send(msg); err != nil {
 		return fmt.Errorf("send message: %w", err)
 	}
