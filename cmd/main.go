@@ -54,8 +54,19 @@ func main() {
 	manager := handlers.NewManager(cfg)
 	for update := range updates {
 		if update.Message != nil { // Если это текстовое сообщение
-			if errUpdate := manager.Message(bot, update.Message); errUpdate != nil {
-				log.Printf("update message error: %s", errUpdate.Error())
+			switch update.Message.Command() {
+			case "start":
+				if errUpdate := manager.StartCommand(bot, update.Message); errUpdate != nil {
+					log.Printf("start message command: %s", err.Error())
+				}
+			case "help":
+				if errUpdate := manager.HelpCommand(bot, update.Message); errUpdate != nil {
+					log.Printf("help message command: %s", err.Error())
+				}
+			default:
+				if errUpdate := manager.Message(bot, update.Message); errUpdate != nil {
+					log.Printf("update message error: %s", errUpdate.Error())
+				}
 			}
 		} else if update.CallbackQuery != nil { // Если это callback от inline-кнопки
 			if errUpdate := manager.Callback(bot, update.CallbackQuery); errUpdate != nil {

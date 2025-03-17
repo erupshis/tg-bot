@@ -13,6 +13,8 @@ type Config struct {
 	ChannelID string
 	AdminID   int64
 
+	Greetings string
+
 	Debug bool
 }
 
@@ -37,6 +39,8 @@ func New() (*Config, error) {
 	if cfg.ChannelID == "" {
 		return nil, fmt.Errorf("channel ID not found")
 	}
+
+	cfg.Greetings = os.Getenv("GREETINGS")
 
 	adminIDStr := os.Getenv("ADMIN_ID")
 	var err error
