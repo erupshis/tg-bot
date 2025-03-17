@@ -23,9 +23,9 @@ func New() (*Config, error) {
 		return nil, fmt.Errorf("YC_ID not set")
 	}
 
-	cfg.YCPort = os.Getenv("YC_PORT")
+	cfg.YCPort = os.Getenv("PORT")
 	if cfg.YCPort == "" {
-		return nil, fmt.Errorf("YC_PORT not set")
+		return nil, fmt.Errorf("PORT not set")
 	}
 
 	cfg.BotToken = os.Getenv("BOT_TOKEN")

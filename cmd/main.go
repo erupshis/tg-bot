@@ -46,7 +46,7 @@ func main() {
 
 	updates := bot.ListenForWebhook("/" + bot.Token)
 	go func() {
-		if errServer := http.ListenAndServe(":8080", nil); err != nil {
+		if errServer := http.ListenAndServe(fmt.Sprintf(":%s", cfg.YCPort), nil); err != nil {
 			log.Fatal(errServer)
 		}
 	}()

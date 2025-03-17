@@ -19,7 +19,6 @@ WORKDIR /app
 # Копируем бинарный файл из этапа сборки
 COPY --from=builder /app/bot bot
 
-EXPOSE 8080
 # Указываем команду для запуска
 CMD ["./bot"]
 
