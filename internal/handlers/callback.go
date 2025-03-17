@@ -11,15 +11,15 @@ func (m *Manager) Callback(bot *tgbotapi.BotAPI, callback *tgbotapi.CallbackQuer
 	// Разделяем callback_data на действие и сообщение
 	data := strings.SplitN(callback.Data, "_", 2)
 	action := data[0]
-	userMessage := data[1]
+	//userMessage := data[1]
 
 	if action == "approve" {
 		// Отправляем сообщение в канал
-		msg := tgbotapi.NewMessageToChannel(m.cfg.ChannelID, userMessage)
-		msg.ParseMode = "Markdown"
-		if _, err := bot.Send(msg); err != nil {
-			return fmt.Errorf("sending approved message in channel: %w", err)
-		}
+		//msg := tgbotapi.NewMessageToChannel(m.cfg.ChannelID, userMessage)
+		//msg.ParseMode = "Markdown"
+		//if _, err := bot.Send(msg); err != nil {
+		//	return fmt.Errorf("sending approved message in channel: %w", err)
+		//}
 
 		// Редактируем сообщение администратора
 		edit := tgbotapi.NewEditMessageText(callback.Message.Chat.ID, callback.Message.MessageID, "Сообщение одобрено и отправлено в канал.")

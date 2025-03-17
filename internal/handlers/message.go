@@ -21,9 +21,14 @@ func (m *Manager) Message(bot *tgbotapi.BotAPI, message *tgbotapi.Message) error
 	// Отправляем сообщение администратору на проверку
 	msg := tgbotapi.NewMessage(m.cfg.AdminID, "Сообщение на проверку:\n\n"+userMessage)
 	msg.ReplyMarkup = keyboard
-	msg.ParseMode = "Markdown"
 	if _, err := bot.Send(msg); err != nil {
 		return fmt.Errorf("sending message to administrator: %w", err)
+	}
+
+	msgChannel := tgbotapi.NewMessageToChannel(m.cfg.ChannelID, userMessage)
+	msgChannel.ParseMode = "Markdown"
+	if _, err := bot.Send(msgChannel); err != nil {
+		return fmt.Errorf("sending unchecked message in channel: %w", err)
 	}
 
 	// Отправляем подтверждение пользователю
