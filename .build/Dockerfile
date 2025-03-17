@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Собираем приложение
-RUN go mod tidy CGO_ENABLED=0 GOOS=linux go build -a -o bot ./cmd/main.go
+RUN go mod tidy && CGO_ENABLED=0 GOOS=linux go build -a -o bot ./cmd/main.go
 
 # Этап 2: Создание финального образа
 FROM alpine:latest
