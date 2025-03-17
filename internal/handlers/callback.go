@@ -16,6 +16,7 @@ func (m *Manager) Callback(bot *tgbotapi.BotAPI, callback *tgbotapi.CallbackQuer
 	if action == "approve" {
 		// Отправляем сообщение в канал
 		msg := tgbotapi.NewMessageToChannel(m.cfg.ChannelID, userMessage)
+		msg.ParseMode = "Markdown"
 		if _, err := bot.Send(msg); err != nil {
 			return fmt.Errorf("sending approved message in channel: %w", err)
 		}

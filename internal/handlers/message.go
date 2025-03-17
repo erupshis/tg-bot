@@ -13,14 +13,15 @@ func (m *Manager) Message(bot *tgbotapi.BotAPI, message *tgbotapi.Message) error
 	// Создаем inline клавиатуру с кнопками ДА/НЕТ
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("ДА", "approve_"+userMessage),
-			tgbotapi.NewInlineKeyboardButtonData("НЕТ", "reject_"+userMessage),
+			tgbotapi.NewInlineKeyboardButtonData("✅ Одобрить", "approve_"+userMessage),
+			tgbotapi.NewInlineKeyboardButtonData("❌ Отклонить", "reject_"+userMessage),
 		),
 	)
 
 	// Отправляем сообщение администратору на проверку
 	msg := tgbotapi.NewMessage(m.cfg.AdminID, "Сообщение на проверку:\n\n"+userMessage)
 	msg.ReplyMarkup = keyboard
+	msg.ParseMode = "Markdown"
 	if _, err := bot.Send(msg); err != nil {
 		return fmt.Errorf("sending message to administrator: %w", err)
 	}
