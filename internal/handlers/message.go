@@ -13,8 +13,8 @@ func (m *Manager) Message(bot *tgbotapi.BotAPI, message *tgbotapi.Message) error
 	// Создаем inline клавиатуру с кнопками ДА/НЕТ
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("✅ Одобрить", "approve_"+userMessage),
-			tgbotapi.NewInlineKeyboardButtonData("❌ Отклонить", "reject_"+userMessage),
+			tgbotapi.NewInlineKeyboardButtonData("✅ Одобрить", "approve_"),
+			tgbotapi.NewInlineKeyboardButtonData("❌ Отклонить", "reject_"),
 		),
 	)
 
