@@ -64,6 +64,6 @@ https://t.me/menopauseanonymous
 Кристина Рупшайте
 https://www.instagram.com/kristina_rupshayte_psy
 
-👇🏼 Давай попробуем:
 Твои сообщения появятся на канале:
-https://t.me/menopauseanonymous`
+https://t.me/menopauseanonymous
+👇🏼 Давай попробуем, пиши свое сообщение`
