@@ -3,12 +3,14 @@ package handlers
 import (
 	"fmt"
 
+	"tg-bot/internal/pkg/text_formatter"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 // Message Обработка текстовых сообщений
 func (m *Manager) Message(bot *tgbotapi.BotAPI, message *tgbotapi.Message) error {
-	userMessage := message.Text
+	userMessage := text_formatter.EscapeMarkdownV2(message.Text)
 
 	// Создаем inline клавиатуру с кнопками ДА/НЕТ
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
@@ -26,7 +28,7 @@ func (m *Manager) Message(bot *tgbotapi.BotAPI, message *tgbotapi.Message) error
 	}
 
 	msgChannel := tgbotapi.NewMessageToChannel(m.cfg.ChannelID, userMessage)
-	msgChannel.ParseMode = "MarkdownV2"
+	msgChannel.ParseMode = tgbotapi.ModeMarkdownV2
 	if _, err := bot.Send(msgChannel); err != nil {
 		return fmt.Errorf("sending unchecked message in channel: %w", err)
 	}
@@ -38,5 +40,3 @@ func (m *Manager) Message(bot *tgbotapi.BotAPI, message *tgbotapi.Message) error
 
 	return nil
 }
-
-// Обработка callback от inline кнопок
