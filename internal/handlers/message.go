@@ -26,7 +26,7 @@ func (m *Manager) Message(bot *tgbotapi.BotAPI, message *tgbotapi.Message) error
 	}
 
 	msgChannel := tgbotapi.NewMessageToChannel(m.cfg.ChannelID, userMessage)
-	msgChannel.ParseMode = "Markdown"
+	msgChannel.ParseMode = "MarkdownV2"
 	if _, err := bot.Send(msgChannel); err != nil {
 		return fmt.Errorf("sending unchecked message in channel: %w", err)
 	}
