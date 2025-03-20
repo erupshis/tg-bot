@@ -7,11 +7,13 @@ import (
 )
 
 type Config struct {
-	YCID      string
-	YCPort    string
-	BotToken  string
-	ChannelID string
-	AdminID   int64
+	YCID          string
+	YCPort        string
+	BotToken      string
+	ChannelID     string
+	AdminID       int64
+	MinMessageLen int64
+	LogLevel      string
 
 	Debug bool
 }
@@ -44,6 +46,14 @@ func New() (*Config, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parse AdminID: %w", err)
 	}
+
+	minMessageLenStr := os.Getenv("MIN_MESSAGE_LEN")
+	cfg.MinMessageLen, err = strconv.ParseInt(minMessageLenStr, 10, 64)
+	if err != nil {
+		return nil, fmt.Errorf("parse MinMessageLen: %w", err)
+	}
+
+	cfg.LogLevel = "info" //TODO: add
 
 	return &cfg, nil
 }

@@ -1,15 +1,15 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"log"
-	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 
-	"tg-bot/internal/config"
-	"tg-bot/internal/handlers"
-	"tg-bot/internal/ui"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/erupshis/tg-bot/internal"
+	"github.com/erupshis/tg-bot/internal/config"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -18,66 +18,34 @@ func main() {
 		log.Fatalf("load envs: %s", err.Error())
 	}
 
-	fmt.Printf("parsed config: %+v\n", cfg)
+	app := internal.NewApp(cfg)
 
-	bot, err := tgbotapi.NewBotAPI(cfg.BotToken)
-	if err != nil {
-		log.Fatal(err)
+	if err = app.Init(); err != nil {
+		log.Fatalf("init app: %s", err.Error())
 	}
 
-	bot.Debug = true
+	ctxWithCancel, cancel := context.WithCancel(context.Background())
+	app.Run(ctxWithCancel)
 
-	log.Printf("Authorized on account %s", bot.Self.UserName)
+	// graceShutdown.
+	graceShutdown(cancel, app)
+}
 
-	wh, _ := tgbotapi.NewWebhook(fmt.Sprintf("https://%s.containers.yandexcloud.net/%s", cfg.YCID, bot.Token))
-
-	_, err = bot.Request(wh)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	info, err := bot.GetWebhookInfo()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if info.LastErrorDate != 0 {
-		log.Printf("Telegram callback failed: %s", info.LastErrorMessage)
-	}
-
-	updates := bot.ListenForWebhook("/" + bot.Token)
+func graceShutdown(cancel context.CancelFunc, app *internal.App) {
+	idleConnsClosed := make(chan struct{})
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	go func() {
-		if errServer := http.ListenAndServe(fmt.Sprintf(":%s", cfg.YCPort), nil); err != nil {
-			log.Fatal(errServer)
+		<-sigCh
+
+		if err := app.Shutdown(context.Background()); err != nil {
+			logrus.Errorf("http server graceShutdown: %s", err.Error())
 		}
+
+		cancel()
+		close(idleConnsClosed)
 	}()
 
-	keyboard := ui.InitKeyboard()
-
-	manager := handlers.NewManager(cfg)
-	for update := range updates {
-		if update.Message != nil { // Если это текстовое сообщение
-			switch update.Message.Command() {
-			case "start":
-				if errUpdate := manager.StartCommand(bot, update.Message.Chat.ID, keyboard); errUpdate != nil {
-					log.Printf("start message command: %s", err.Error())
-				}
-
-			case "help":
-				if errUpdate := manager.HelpCommand(bot, update.Message); errUpdate != nil {
-					log.Printf("help message command: %s", err.Error())
-				}
-			default:
-				if errUpdate := manager.Message(bot, update.Message); errUpdate != nil {
-					log.Printf("update message error: %s", errUpdate.Error())
-				}
-			}
-		} else if update.CallbackQuery != nil { // Если это callback от inline-кнопки
-			if errUpdate := manager.Callback(bot, update.CallbackQuery); errUpdate != nil {
-				log.Printf("update message error: %s", errUpdate.Error())
-			}
-		} else {
-			log.Printf("unknown request from chat with user: %s", update.FromChat().UserName)
-		}
-	}
+	<-idleConnsClosed
+	logrus.Infof("service graceShutdown gracefully")
 }

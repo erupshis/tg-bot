@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"tg-bot/internal/config"
+	"github.com/erupshis/tg-bot/internal/config"
 )
 
 type Manager struct {
