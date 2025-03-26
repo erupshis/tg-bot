@@ -6,24 +6,27 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/erupshis/tg-bot/internal/bot"
 	"github.com/erupshis/tg-bot/internal/config"
 	"github.com/erupshis/tg-bot/internal/handlers"
+	"github.com/erupshis/tg-bot/internal/localization"
 	"github.com/erupshis/tg-bot/internal/pkg/closer"
+	"github.com/erupshis/tg-bot/internal/tg_bot"
 	"github.com/sirupsen/logrus"
 )
 
 type App struct {
-	tgBot  *bot.Telegram
+	tgBot  *tg_bot.Telegram
 	server *http.Server
 
-	cfg *config.Config
+	cfg     *config.Config
+	locales *localization.Localizer
 }
 
 func NewApp() *App {
 	app := &App{}
 	return app.
-		InitConfig().
+		//InitConfig().
+		InitLocales().
 		InitLogger().
 		InitTelegramBot().
 		InitHttpServer()
@@ -33,7 +36,7 @@ func (a *App) Run(ctx context.Context) {
 	go func() {
 		if err := a.tgBot.Run(ctx, handlers.NewManager(a.cfg)); err != nil {
 			if !errors.Is(err, context.Canceled) {
-				logrus.Errorf("Telegram bot failed: %s", err.Error())
+				logrus.Errorf("Telegram tg_bot failed: %s", err.Error())
 			}
 		}
 	}()

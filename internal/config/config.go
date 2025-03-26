@@ -14,8 +14,8 @@ type Config struct {
 	AdminID       int64
 	MinMessageLen int64
 	LogLevel      string
-
-	Debug bool
+	Lang          string
+	Debug         bool
 }
 
 func New() (*Config, error) {
@@ -54,6 +54,7 @@ func New() (*Config, error) {
 	}
 
 	cfg.LogLevel = "info" //TODO: add
+	cfg.Lang = "ru"       //TODO: add
 
 	return &cfg, nil
 }

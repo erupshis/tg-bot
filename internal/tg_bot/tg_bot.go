@@ -1,4 +1,4 @@
-package bot
+package tg_bot
 
 import (
 	"context"

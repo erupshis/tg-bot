@@ -6,8 +6,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/erupshis/tg-bot/internal/bot"
 	"github.com/erupshis/tg-bot/internal/config"
+	"github.com/erupshis/tg-bot/internal/localization"
+	"github.com/erupshis/tg-bot/internal/tg_bot"
 	"github.com/sirupsen/logrus"
 )
 
@@ -18,6 +19,16 @@ func (a *App) InitConfig() *App {
 	}
 
 	a.cfg = cfg
+	return a
+}
+
+func (a *App) InitLocales() *App {
+	var err error
+	a.locales, err = localization.New(a.cfg.Lang)
+	if err != nil {
+		log.Fatalf("load localization: %s", err.Error())
+	}
+
 	return a
 }
 
@@ -35,9 +46,9 @@ func (a *App) InitLogger() *App {
 
 func (a *App) InitTelegramBot() *App {
 	var err error
-	a.tgBot, err = bot.NewTelegramBot(a.cfg.BotToken, a.cfg.YCID, a.cfg.Debug)
+	a.tgBot, err = tg_bot.NewTelegramBot(a.cfg.BotToken, a.cfg.YCID, a.cfg.Debug)
 	if err != nil {
-		log.Fatalf("create telegram bot: %s", err.Error())
+		log.Fatalf("create telegram tg_bot: %s", err.Error())
 	}
 
 	return a
