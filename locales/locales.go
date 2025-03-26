@@ -4,64 +4,69 @@ package locales
 
 type MessageKey string
 
-var Messages = struct {
-	Admin struct {
-		Callback struct {
-			Approved MessageKey
-			Rejected MessageKey
+var (
+	Errors = struct {
+	}{}
+
+	Messages = struct {
+		Admin struct {
+			Callback struct {
+				Approved MessageKey
+				Rejected MessageKey
+			}
+			NewMessage struct {
+				MessageHeader MessageKey
+				ApproveButton MessageKey
+				RejectButton  MessageKey
+			}
 		}
-		NewMessage struct {
-			MessageHeader MessageKey
-			ApproveButton MessageKey
-			RejectButton  MessageKey
+		User struct {
+			MessageReceived MessageKey
 		}
-	}
-	User struct {
-		MessageReceived MessageKey
-	}
-	Commands struct {
-		Help  MessageKey
-		Start MessageKey
-	}
-}{
-	Admin: struct {
-		Callback struct {
-			Approved MessageKey
-			Rejected MessageKey
-		}
-		NewMessage struct {
-			MessageHeader MessageKey
-			ApproveButton MessageKey
-			RejectButton  MessageKey
+		Commands struct {
+			Help  MessageKey
+			Start MessageKey
 		}
 	}{
-		Callback: struct {
-			Approved MessageKey
-			Rejected MessageKey
+		Admin: struct {
+			Callback struct {
+				Approved MessageKey
+				Rejected MessageKey
+			}
+			NewMessage struct {
+				MessageHeader MessageKey
+				ApproveButton MessageKey
+				RejectButton  MessageKey
+			}
 		}{
-			Approved: "messages.admin.callback.approved",
-			Rejected: "messages.admin.callback.rejected",
+			Callback: struct {
+				Approved MessageKey
+				Rejected MessageKey
+			}{
+				Approved: "messages.admin.callback.approved",
+				Rejected: "messages.admin.callback.rejected",
+			},
+			NewMessage: struct {
+				MessageHeader MessageKey
+				ApproveButton MessageKey
+				RejectButton  MessageKey
+			}{
+				MessageHeader: "messages.admin.new_message.message_header",
+				ApproveButton: "messages.admin.new_message.approve_button",
+				RejectButton:  "messages.admin.new_message.reject_button",
+			},
 		},
-		NewMessage: struct {
-			MessageHeader MessageKey
-			ApproveButton MessageKey
-			RejectButton  MessageKey
+		User: struct {
+			MessageReceived MessageKey
 		}{
-			MessageHeader: "messages.admin.new_message.message_header",
-			ApproveButton: "messages.admin.new_message.approve_button",
-			RejectButton:  "messages.admin.new_message.reject_button",
+			MessageReceived: "messages.user.message_received",
 		},
-	},
-	User: struct {
-		MessageReceived MessageKey
-	}{
-		MessageReceived: "messages.user.message_received",
-	},
-	Commands: struct {
-		Help  MessageKey
-		Start MessageKey
-	}{
-		Help:  "messages.commands.help",
-		Start: "messages.commands.start",
-	},
-}
+		Commands: struct {
+			Help  MessageKey
+			Start MessageKey
+		}{
+			Help:  "messages.commands.help",
+			Start: "messages.commands.start",
+		},
+	}
+)
