@@ -7,6 +7,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+type LogLevel string
+
+const (
+	INFO  LogLevel = "info"
+	ERROR LogLevel = "error"
+	WARN  LogLevel = "warn"
+)
+
 var (
 	_ BaseLogger = (*Logrus)(nil)
 )

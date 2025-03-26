@@ -9,6 +9,7 @@ import (
 	"github.com/erupshis/tg-bot/internal/bot"
 	"github.com/erupshis/tg-bot/internal/config"
 	"github.com/erupshis/tg-bot/internal/handlers"
+	"github.com/erupshis/tg-bot/internal/pkg/closer"
 	"github.com/sirupsen/logrus"
 )
 
@@ -19,11 +20,13 @@ type App struct {
 	cfg *config.Config
 }
 
-func NewApp(cfg *config.Config) *App {
-	return &App{
-		cfg: cfg,
-	}
-
+func NewApp() *App {
+	app := &App{}
+	return app.
+		InitConfig().
+		InitLogger().
+		InitTelegramBot().
+		InitHttpServer()
 }
 
 func (a *App) Run(ctx context.Context) {
@@ -40,6 +43,8 @@ func (a *App) Run(ctx context.Context) {
 			logrus.Errorf("http server serve: %s", errServer.Error())
 		}
 	}()
+
+	closer.Run()
 }
 
 func (a *App) Shutdown(ctx context.Context) error {

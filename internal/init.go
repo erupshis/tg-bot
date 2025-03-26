@@ -2,40 +2,51 @@ package internal
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/erupshis/tg-bot/internal/bot"
+	"github.com/erupshis/tg-bot/internal/config"
 	"github.com/sirupsen/logrus"
 )
 
-func (a *App) Init() error {
-	if err := initLogrus(a.cfg.LogLevel); err != nil {
-		return fmt.Errorf("init logger: %w", err)
-	}
-
-	var err error
-	a.tgBot, err = bot.NewTelegramBot(a.cfg.BotToken, a.cfg.YCID, true)
+func (a *App) InitConfig() *App {
+	cfg, err := config.New()
 	if err != nil {
-		return fmt.Errorf("create telegram bot: %w", err)
+		log.Fatalf("load envs: %s", err.Error())
 	}
 
-	a.server = &http.Server{
-		Addr:    fmt.Sprintf(":%s", a.cfg.YCPort),
-		Handler: nil,
-	}
-
-	return nil
+	a.cfg = cfg
+	return a
 }
 
-func initLogrus(logLevel string) error {
-	level, err := logrus.ParseLevel(logLevel)
+func (a *App) InitLogger() *App {
+	level, err := logrus.ParseLevel(a.cfg.LogLevel)
 	if err != nil {
-		return fmt.Errorf("parse Level from config: %w", err)
+		log.Fatalf("parse log level from config: %s", err.Error())
 	}
 
 	logrus.SetLevel(level)
 	logrus.SetFormatter(&logrus.JSONFormatter{})
 	logrus.SetOutput(os.Stdout)
-	return nil
+	return a
+}
+
+func (a *App) InitTelegramBot() *App {
+	var err error
+	a.tgBot, err = bot.NewTelegramBot(a.cfg.BotToken, a.cfg.YCID, a.cfg.Debug)
+	if err != nil {
+		log.Fatalf("create telegram bot: %s", err.Error())
+	}
+
+	return a
+}
+
+func (a *App) InitHttpServer() *App {
+	a.server = &http.Server{
+		Addr:    fmt.Sprintf(":%s", a.cfg.YCPort),
+		Handler: nil,
+	}
+	return a
 }
