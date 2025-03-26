@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/erupshis/tg-bot/locales"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -22,13 +23,13 @@ func (m *Manager) Callback(bot *tgbotapi.BotAPI, callback *tgbotapi.CallbackQuer
 		//}
 
 		// Редактируем сообщение администратора
-		edit := tgbotapi.NewEditMessageText(callback.Message.Chat.ID, callback.Message.MessageID, "Сообщение одобрено и отправлено в канал.")
+		edit := tgbotapi.NewEditMessageText(callback.Message.Chat.ID, callback.Message.MessageID, m.locales.Get(locales.Messages.Admin.Callback.Approved))
 		if _, err := bot.Send(edit); err != nil {
 			return fmt.Errorf("modify approved message at admin's cchat: %w", err)
 		}
 	} else if action == "reject" {
 		// Редактируем сообщение администратора
-		edit := tgbotapi.NewEditMessageText(callback.Message.Chat.ID, callback.Message.MessageID, "Сообщение отклонено и не будет отправлено в канал.")
+		edit := tgbotapi.NewEditMessageText(callback.Message.Chat.ID, callback.Message.MessageID, m.locales.Get(locales.Messages.Admin.Callback.Rejected))
 		if _, err := bot.Send(edit); err != nil {
 			return fmt.Errorf("modify rejected message at admin's cchat: %w", err)
 		}

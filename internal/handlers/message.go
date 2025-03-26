@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/erupshis/tg-bot/internal/pkg/text_formatter"
+	"github.com/erupshis/tg-bot/locales"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -12,7 +13,7 @@ func (m *Manager) Message(bot *tgbotapi.BotAPI, message *tgbotapi.Message) error
 	userMessage := text_formatter.EscapeMarkdownV2(message.Text)
 
 	if !isMessageValid(userMessage, int(m.cfg.MinMessageLen)) {
-		response := fmt.Sprintf("Ваше сообщение должно быть длиньше %d знаков", m.cfg.MinMessageLen)
+		response := m.locales.Getf(locales.Messages.User.MessageTooShort, m.cfg.MinMessageLen)
 		if _, err := bot.Send(tgbotapi.NewMessage(message.Chat.ID, response)); err != nil {
 			return fmt.Errorf("sending confirmation message to user: %w", err)
 		}
@@ -31,7 +32,7 @@ func (m *Manager) Message(bot *tgbotapi.BotAPI, message *tgbotapi.Message) error
 	}
 
 	// Отправляем подтверждение пользователю
-	if _, err := bot.Send(tgbotapi.NewMessage(message.Chat.ID, "Ваше сообщение добавлено в очередь на публикацию")); err != nil {
+	if _, err := bot.Send(tgbotapi.NewMessage(message.Chat.ID, m.locales.Get(locales.Messages.User.MessageReceived))); err != nil {
 		return fmt.Errorf("sending confirmation message to user: %w", err)
 	}
 
@@ -42,13 +43,13 @@ func (m *Manager) sendMessageToAdmin(bot *tgbotapi.BotAPI, userMessage string) e
 	// Создаем inline клавиатуру с кнопками ДА/НЕТ
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("✅ Одобрить", "approve_"),
-			tgbotapi.NewInlineKeyboardButtonData("❌ Отклонить", "reject_"),
+			tgbotapi.NewInlineKeyboardButtonData(m.locales.Get(locales.Messages.Admin.NewMessage.ApproveButton), "approve_"),
+			tgbotapi.NewInlineKeyboardButtonData(m.locales.Get(locales.Messages.Admin.NewMessage.RejectButton), "reject_"),
 		),
 	)
 
 	// Отправляем сообщение администратору на проверку
-	msg := tgbotapi.NewMessage(m.cfg.AdminID, "Сообщение на проверку:\n\n"+userMessage)
+	msg := tgbotapi.NewMessage(m.cfg.AdminID, m.locales.Get(locales.Messages.Admin.NewMessage.MessageHeader)+userMessage)
 	msg.ReplyMarkup = keyboard
 	if _, err := bot.Send(msg); err != nil {
 		return fmt.Errorf("sending message to administrator: %w", err)

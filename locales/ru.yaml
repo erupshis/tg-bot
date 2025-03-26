@@ -20,6 +20,8 @@ messages:
   user:
     message_received:
       Ваше сообщение добавлено в очередь на публикацию.
+    message_too_short:
+      Ваше сообщение должно быть длиньше %d знаков.
 
   commands:
     help: | 

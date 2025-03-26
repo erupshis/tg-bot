@@ -10,17 +10,18 @@ var (
 
 	Messages = struct {
 		Admin struct {
-			Callback struct {
-				Approved MessageKey
-				Rejected MessageKey
-			}
 			NewMessage struct {
 				MessageHeader MessageKey
 				ApproveButton MessageKey
 				RejectButton  MessageKey
 			}
+			Callback struct {
+				Approved MessageKey
+				Rejected MessageKey
+			}
 		}
 		User struct {
+			MessageTooShort MessageKey
 			MessageReceived MessageKey
 		}
 		Commands struct {
@@ -29,23 +30,16 @@ var (
 		}
 	}{
 		Admin: struct {
-			Callback struct {
-				Approved MessageKey
-				Rejected MessageKey
-			}
 			NewMessage struct {
 				MessageHeader MessageKey
 				ApproveButton MessageKey
 				RejectButton  MessageKey
 			}
-		}{
-			Callback: struct {
+			Callback struct {
 				Approved MessageKey
 				Rejected MessageKey
-			}{
-				Approved: "messages.admin.callback.approved",
-				Rejected: "messages.admin.callback.rejected",
-			},
+			}
+		}{
 			NewMessage: struct {
 				MessageHeader MessageKey
 				ApproveButton MessageKey
@@ -55,10 +49,19 @@ var (
 				ApproveButton: "messages.admin.new_message.approve_button",
 				RejectButton:  "messages.admin.new_message.reject_button",
 			},
+			Callback: struct {
+				Approved MessageKey
+				Rejected MessageKey
+			}{
+				Approved: "messages.admin.callback.approved",
+				Rejected: "messages.admin.callback.rejected",
+			},
 		},
 		User: struct {
+			MessageTooShort MessageKey
 			MessageReceived MessageKey
 		}{
+			MessageTooShort: "messages.user.message_too_short",
 			MessageReceived: "messages.user.message_received",
 		},
 		Commands: struct {

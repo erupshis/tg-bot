@@ -25,7 +25,7 @@ type App struct {
 func NewApp() *App {
 	app := &App{}
 	return app.
-		//InitConfig().
+		InitConfig().
 		InitLocales().
 		InitLogger().
 		InitTelegramBot().
@@ -34,7 +34,7 @@ func NewApp() *App {
 
 func (a *App) Run(ctx context.Context) {
 	go func() {
-		if err := a.tgBot.Run(ctx, handlers.NewManager(a.cfg)); err != nil {
+		if err := a.tgBot.Run(ctx, handlers.NewManager(a.cfg, a.locales)); err != nil {
 			if !errors.Is(err, context.Canceled) {
 				logrus.Errorf("Telegram tg_bot failed: %s", err.Error())
 			}
